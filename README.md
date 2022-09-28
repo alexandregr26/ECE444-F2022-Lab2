@@ -1,2 +1,6 @@
 # ECE444-F2022-Lab2
-ECE444 Lab 2
+
+
+Alexandre Gouveia Rodrigues
+
+This repo is a clone of https://github.com/miguelgrinberg/flasky

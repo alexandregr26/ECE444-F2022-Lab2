@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from datetime import datetime
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, EmailField
 from wtforms.validators import DataRequired
 
 app = Flask(__name__)
@@ -15,7 +15,8 @@ moment = Moment(app)
 
 class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
-    email = StringField('What is your UofT Email address?', validators=[DataRequired()])
+    email = EmailField('What is your UofT Email address?',
+                       validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 
@@ -31,18 +32,22 @@ def index():
 
         # Check email
         valid_email = False
+        old_email = session.get('email')
+
         if "utoronto.ca" not in form.email.data:
-            flash('Looks like you have changed your email!')
             session.pop('email', None)
         else:
             valid_email = True
-        
+
+        if old_email is not None and old_email != form.email.data:
+            flash('Looks like you have changed your email!')
+
         if valid_email:
             session['email'] = form.email.data
 
         return redirect(url_for('index'))
     return render_template('index.html',
-        form = form, name = session.get('name'), email = session.get('email'))
+                           form=form, name=session.get('name'), email=session.get('email'))
 
 
 @app.route('/user/<name>')
